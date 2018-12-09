@@ -138,5 +138,23 @@ namespace StaticFilesTest.Controllers
             }
             return Json(response);
         }
+
+        public JsonResult Grade([FromQuery] CollegeInfoRequest collegeName)//查分数线
+        {
+            var response=new Response{Code=1,Data=null};
+            try
+            {
+                var students=from u in _context.Admissions.Include(a => a.AcceptedStudent) select u.AcceptedStudent;
+                students.OrderByDescending(s => s.TotalGrade);
+                var gradeLine=students.Select(s => s.TotalGrade).Last();
+                response.Data=gradeLine;
+                response.Code=0;
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex,"Can't get the school's gradeline");
+            }
+            return Json(response);
+        }
     }
 }
