@@ -13,6 +13,7 @@ using StaticFilesTest.Api;
 using StaticFilesTest.Api.Student;
 using StaticFilesTest.Models;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace StaticFilesTest.Controllers
 {
@@ -74,6 +75,66 @@ namespace StaticFilesTest.Controllers
             {
                 response.Code=1;
                 _logger.LogError(ex,"An exception occured while add volunteers to database.");
+            }
+            return Json(response);
+        }
+
+        public JsonResult Situation()
+        {
+            var response=new Response{Code=0,Data=null};
+            string Sid=HttpContext.Session.GetString("UserID");
+            try
+            {
+                var admission=_context.Admissions.Include(s => s.Major).SingleOrDefaultAsync(s => s.Sid==Sid).Result;
+                AdmissionResponse admissionResponse=new AdmissionResponse{College=admission.Uname,Profession=admission.Major.Mname};
+                response.Data=admissionResponse;
+            }
+            catch(Exception ex)
+            {
+                response.Code=1;
+                _logger.LogError(ex,"An error occurred while query the student's admission.");
+            }
+            return Json(response);
+        }
+
+        [HttpGet]
+        public JsonResult Info([FromQuery] CollegeInfoRequest collegeName)
+        {
+            var response=new Response{Code=0,Data=null};
+            try
+            {
+                var enrollment=_context.CollegeEnrollments.Include(c => c.Major).Where(c => c.Uname==collegeName.College).ToArrayAsync().Result;
+                var enrollmentInfo=new EnrollmentInfo[enrollment.Length];
+                for(int i=0;i<enrollment.Length;i++)
+                {
+                    enrollmentInfo[i]=new EnrollmentInfo{
+                    Key=i,
+                    Profession=enrollment[i].Major.Mname,
+                    Batch=enrollment[i].Bname,
+                    Count=enrollment[i].Menrollment};
+                }
+                response.Data=enrollmentInfo;
+            }
+            catch(Exception ex)
+            {
+                response.Code=1;
+                _logger.LogError(ex,"An error occurred while get college enrollment infomation.");
+            }
+            return Json(response);
+        }
+        [HttpGet]
+        public JsonResult Colleges()
+        {
+            var response=new Response{Code=1,Data=null};
+            try
+            {
+                var colleges=_context.Universities.Select(u => u.Uname).ToArray();
+                response.Data=colleges;
+                response.Code=0;
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex,"Failed to get Universities.");
             }
             return Json(response);
         }
