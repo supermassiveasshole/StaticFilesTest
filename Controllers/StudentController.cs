@@ -49,7 +49,7 @@ namespace StaticFilesTest.Controllers
             
         }
         [HttpPost,ActionName("volunteer")]
-        public async Task<JsonResult> VolunteerStore([FromBody]Volunteer[] volunteers)
+        public async Task<JsonResult> VolunteerStore([FromBody]Volunteer[] volunteers)//支援提交
         {
             var response=new Response{Code=0,Data=new Object()};
             if(volunteers==null)//数据为空
@@ -63,8 +63,14 @@ namespace StaticFilesTest.Controllers
                 {
                     var adjustment=new StudentUniversityAdjustment{Sid=Sid,Uname=volunteer.College,Adjustment=volunteer.IsObey};
                     _context.StudentUniversityAdjustments.Add(adjustment);
+                    var collegeEnrollment=_context.CollegeEnrollments.Where(u => u.Uname==volunteer.College);//当前志愿学校的招生信息
                     for(int i=1;i<=6;i++)//一共六个专业
                     {
+                        if(!collegeEnrollment.Any(u => u.Mid==volunteer.Professions[i-1]))//若该校未开设此专业则填报志愿失败
+                        {
+                            response.Code=1;
+                            return Json(response);
+                        }
                         var application=new Application{Sid=Sid,Uname=volunteer.College,Mid=volunteer.Professions[i-1],No=i};
                         _context.Applications.Add(application);
                     }
@@ -79,7 +85,7 @@ namespace StaticFilesTest.Controllers
             return Json(response);
         }
 
-        public JsonResult Situation()
+        public JsonResult Situation()//录取情况
         {
             var response=new Response{Code=0,Data=null};
             string Sid=HttpContext.Session.GetString("UserID");
@@ -139,7 +145,7 @@ namespace StaticFilesTest.Controllers
             return Json(response);
         }
 
-        public JsonResult Grade([FromQuery] CollegeInfoRequest collegeName)//查分数线
+        public JsonResult Grade([FromQuery] CollegeInfoRequest collegeName)//查分数线，有待完善（加上时间约束）
         {
             var response=new Response{Code=1,Data=null};
             try

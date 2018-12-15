@@ -16,6 +16,7 @@ namespace StaticFilesTest.Models
         [Key]
         public string Bname{get;set;}
         public int Menrollment{get;set;}
+       // public int EnrollmentRemaning{get;set;}//剩余名额
         
         //navigator property
         public University University{get;set;}

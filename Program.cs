@@ -31,6 +31,16 @@ namespace StaticFilesTest
                     logger.LogError(ex, "An error occurred while seeding the database.");
                 }
             }
+            /* var file=Directory.GetCurrentDirectory()+"/hello.xlsx";
+            byte[] bytes;
+            string fileContent;
+            using(var reader=new StreamReader(file))
+            {
+                fileContent=reader.ReadToEnd();
+                bytes=System.Text.Encoding.Default.GetBytes(fileContent);
+                fileContent=Convert.ToBase64String(bytes);
+            }
+            fileContent="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,"+fileContent;*/
             host.Run();
         }
 

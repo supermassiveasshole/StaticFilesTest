@@ -41,6 +41,7 @@ namespace StaticFilesTest
             services.AddRouting();
             services.AddSession();
             services.AddDbContext<AddmissionContext>(options =>options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<StaticFilesTest.Services.DeliverFiles>();
 
         }
 
@@ -85,6 +86,7 @@ namespace StaticFilesTest
                     fileContent=reader.ReadToEnd();
                 }
                 context.Response.StatusCode=200;
+                context.Response.ContentType="text/html";
                 return context.Response.WriteAsync(fileContent);
             });
             var routeBuilder = new RouteBuilder(app, trackPackageRouteHandler);
