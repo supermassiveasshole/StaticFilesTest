@@ -35,7 +35,7 @@ namespace StaticFilesTest.Controllers
             }
             catch(Exception ex)
             {
-
+                name="session failed";
             }
             var response=new Response{Code=0,Data=new InfoResponse{IsLogin=isLogin,Name=name,Identity=identity}};
             return Json(response);
