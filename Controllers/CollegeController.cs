@@ -34,19 +34,19 @@ namespace StaticFilesTest.Controllers
             var now =DateTime.Now;
             var response=new Response{Code=0,Data=null};
             if(_context.Batches.SingleOrDefaultAsync(b => b.Bname=="提前批").Result.ApplicationBeginTime<now
-            ||_context.CollegeEnrollments.Any(u => u.Uname==collegeName))//若招生工作已开始或已提交招生信息，则不予注册招生信息
+            ||_context.Universities.Any(u => u.ApprovalStatus==true))//若招生工作已开始或该校已被招办审批，则不予注册招生信息
             {
                 response.Code=1;
             }
             else//满足时间约束，尝试录入注册信息
             {
-                CollegeEnrollment tempEnrollmentInfo=new CollegeEnrollment();//要装入数据库的高校招生信息
                 try
                 {
                     float rate=registers.Proportion;
                     _context.Universities.SingleOrDefault(u => u.Uname==collegeName).ExpandRate=rate;
                     foreach(var register in registers.Profession)
                     {
+                        CollegeEnrollment tempEnrollmentInfo=new CollegeEnrollment();//要装入数据库的高校招生信息
                         tempEnrollmentInfo.Uname=collegeName;
                         tempEnrollmentInfo.Mid=register.Id;
                         tempEnrollmentInfo.Menrollment=register.Population;

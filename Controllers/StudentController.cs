@@ -61,6 +61,11 @@ namespace StaticFilesTest.Controllers
             {
                 foreach(var volunteer in volunteers)//对于该生的每个志愿
                 {
+                    if(_context.Universities.SingleOrDefaultAsync(u => u.Uname==volunteer.College).Result.ApprovalStatus==false)//若该校审核未通过则志愿填报失败
+                    {
+                        response.Code=1;
+                        return Json(response);
+                    }
                     var adjustment=new StudentUniversityAdjustment{Sid=Sid,Uname=volunteer.College,Adjustment=volunteer.IsObey};
                     _context.StudentUniversityAdjustments.Add(adjustment);
                     var collegeEnrollment=_context.CollegeEnrollments.Where(u => u.Uname==volunteer.College);//当前志愿学校的招生信息
