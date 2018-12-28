@@ -43,7 +43,7 @@ namespace StaticFilesTest
             services.AddDbContext<AddmissionContext>(options =>options.UseSqlServer("Server=.;Database=Admission;Trusted_Connection=True;MultipleActiveResultSets=true"));
             //(Configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<StaticFilesTest.Services.DeliverFiles>();
-
+            services.AddScoped<StaticFilesTest.Services.GetAdmissionList>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

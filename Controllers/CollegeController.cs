@@ -284,5 +284,19 @@ namespace StaticFilesTest.Controllers
             }
             return Json(response);
         }
+
+        [HttpGet,ActionName("excel")]
+        public JsonResult Excel(StaticFilesTest.Services.GetAdmissionList list)
+        {
+            var response=new Response{Code=1,Data=null};
+            if(_context.Admissions.Any(a => a.Uname==HttpContext.Session.GetString("UserName")))
+            {
+                response.Code=0;
+            }
+            list.userName=HttpContext.Session.GetString("UserName");
+            var file="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,"+Convert.ToBase64String(list.GetExcel(_context));
+            response.Data=file;
+            return Json(response);
+        }
     }
 }

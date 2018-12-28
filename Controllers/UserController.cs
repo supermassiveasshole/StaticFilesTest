@@ -57,8 +57,9 @@ namespace StaticFilesTest.Controllers
                 {
                     HttpContext.Session.SetString("IsLogin","true");
                     HttpContext.Session.SetString("UserID",loginRequest.UserName);
-                    string userName=dbContext.UnacceptedStudents.Find(loginRequest.UserName)!=null?
-                    dbContext.UnacceptedStudents.Find(loginRequest.UserName).Sname:dbContext.AcceptedStudents.Find(loginRequest.UserName).Sname;
+                    string userName=dbContext.UnacceptedStudents.Find(loginRequest.UserName)!=null
+                    ?dbContext.UnacceptedStudents.Find(loginRequest.UserName).Sname
+                    :dbContext.AcceptedStudents.Find(loginRequest.UserName).Sname;
                     HttpContext.Session.SetString("UserName",userName);
                     HttpContext.Session.SetString("Identity","0");
                     response.Code=0;
