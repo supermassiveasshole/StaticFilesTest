@@ -157,6 +157,16 @@ namespace StaticFilesTest.Controllers
         public async Task<JsonResult> Table([FromBody] TableRequestOuter request)
         {
             int page=0;//记录当前页码
+            if(HttpContext.Session.GetString("page")==null)
+            {
+                HttpContext.Session.SetString("page","0");
+                page=0;
+            }
+            else
+            {
+                page=int.Parse(HttpContext.Session.GetString("page"));
+            }
+            HttpContext.Session.SetString("page",(page+1).ToString());//当前页自增
             var response=new Response{Code=1,Data=null};
             try
             {
@@ -190,15 +200,6 @@ namespace StaticFilesTest.Controllers
                 }
                 await _context.SaveChangesAsync();
                 //下面返回下一页
-                if(HttpContext.Session.GetString("page")==null)
-                {
-                    HttpContext.Session.SetString("page","1");
-                    page=1;
-                }
-                else
-                {
-                    page=int.Parse(HttpContext.Session.GetString("page"));
-                }
                 var deliverFiles=_context.DeliverFiles
                 .Include(d => d.UnacceptedStudent)
                 .Where(d => d.Uname==HttpContext.Session.GetString("UserName"))
@@ -223,7 +224,6 @@ namespace StaticFilesTest.Controllers
                 }
                 response.Data=students.ToArray();
                 //上面不用考虑第几批次，因为每个批次有每个批次的投档
-                HttpContext.Session.SetString("page",(page+1).ToString());//当前页自增
                 response.Code=0;
             }
             catch(Exception ex)

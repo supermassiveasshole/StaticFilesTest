@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Routing;
 using System.IO;
 using StaticFilesTest.Data;
 using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace StaticFilesTest
 {
@@ -40,8 +41,14 @@ namespace StaticFilesTest
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddRouting();
             services.AddSession();
-            services.AddDbContext<AddmissionContext>(options =>options.UseSqlServer("Server=.;Database=Admission;Trusted_Connection=True;MultipleActiveResultSets=true"));
+            //services.AddDbContext<AddmissionContext>(options =>options.UseSqlServer("Server=.;Database=Admission;Trusted_Connection=True;MultipleActiveResultSets=true"));
             //(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<AddmissionContext>(options =>options.UseMySql("Server=localhost;Database=Admission;User=root;Password=;",
+                mySqlOptions =>
+                {
+                    mySqlOptions.ServerVersion(new Version(10, 1, 37), ServerType.MariaDb); // replace with your Server Version and Type
+                }
+            ));
             services.AddScoped<StaticFilesTest.Services.DeliverFiles>();
             services.AddScoped<StaticFilesTest.Services.GetAdmissionList>();
         }
