@@ -43,7 +43,7 @@ namespace StaticFilesTest
             services.AddSession();
             //services.AddDbContext<AddmissionContext>(options =>options.UseSqlServer("Server=.;Database=Admission;Trusted_Connection=True;MultipleActiveResultSets=true"));
             //(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDbContext<AddmissionContext>(options =>options.UseMySql("Server=localhost;Database=Admission;User=root;Password=;",
+            services.AddDbContext<AddmissionContext>(options =>options.UseMySql("Server=localhost;Database=ef;User=root;Password=password;",
                 mySqlOptions =>
                 {
                     mySqlOptions.ServerVersion(new Version(10, 1, 37), ServerType.MariaDb); // replace with your Server Version and Type
@@ -67,8 +67,6 @@ namespace StaticFilesTest
             }
             app.UseSession();
             app.UseDefaultFiles();
-            app.UseStaticFiles();
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
